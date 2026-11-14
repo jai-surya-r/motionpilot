@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <defs>
+    <linearGradient id="mpTile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.5" stop-color="#ededed"/>
+      <stop offset="1" stop-color="#c6c6c6"/>
+    </linearGradient>
+    <linearGradient id="mpSheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- tile: crisp dark rim for contrast on dark UIs, light bevel inside -->
+  <rect x="1" y="1" width="46" height="46" rx="12.5" fill="#000000" fill-opacity="0.35"/>
+  <rect x="2" y="2" width="44" height="44" rx="11.5" fill="url(#mpTile)"/>
+  <path d="M13.5 2.5h21A11 11 0 0 1 45.5 13.5v1.5H2.5v-1.5A11 11 0 0 1 13.5 2.5z" fill="url(#mpSheen)" opacity="0.6"/>
+  <rect x="2.5" y="2.5" width="43" height="43" rx="11" fill="none" stroke="#ffffff" stroke-opacity="0.85"/>
+  <!-- motion path: an ease-in-out curve from a start keyframe to an end keyframe -->
+  <path d="M11.8 33.6 C 19.6 33.6, 17.6 15, 24.6 15" fill="none" stroke="#0b0b0b" stroke-width="4.2" stroke-linecap="round"/>
+  <circle cx="11.8" cy="33.6" r="4.3" fill="#0b0b0b"/>
+  <circle cx="11.8" cy="33.6" r="1.7" fill="#e9e9e9"/>
+  <!-- end keyframe: the After Effects diamond -->
+  <path d="M35.4 8.4 L42 15 L35.4 21.6 L28.8 15 Z" fill="#0b0b0b" stroke="#0b0b0b" stroke-width="1.2" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>MotionPilot</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div id="app">
+
+    <header id="topbar">
+      <div class="brand" title="MotionPilot">
+        <img class="brand-mark" src="img/mark.svg" alt="" />
+        <span class="brand-name">Motion<b>Pilot</b></span>
+      </div>
+      <div class="top-actions">
+        <div class="engines">
+          <span id="authDot" class="eng auth-unknown" data-icon="claude" title="Claude Code sign-in status"><i class="dot"></i></span>
+          <span id="codexDot" class="eng auth-unknown" data-icon="openai" title="ChatGPT (Codex CLI) sign-in status"><i class="dot"></i></span>
+        </div>
+        <span id="tokenInfo" title="Context window — how full this chat's model session is"></span>
+        <button id="compactBtn" class="tb hidden" data-icon="compact" data-tip="Compact chat" title="Compact this chat: summarize everything so far into a short brief and start a fresh session from it (one cheap Haiku call). Nothing built in After Effects is touched."></button>
+        <span class="tb-sep"></span>
+        <button id="revertBtn" class="tb" data-icon="undo" data-tip="Undo last prompt" title="Undo everything the last prompt changed in After Effects"></button>
+        <button id="handbookBtn" class="tb hidden" data-icon="book" data-tip="Handbook" title="Handbook — a hand-over note for this chat"></button>
+        <button id="historyBtn" class="tb" data-icon="history" data-tip="Chat history" title="Chat history"></button>
+        <button id="cacheBtn" class="tb" data-icon="disk" data-tip="Storage" title="Cache &amp; temp files — see how much disk the panel uses and clear it"></button>
+        <button id="acctBtn" class="tb" data-icon="users" data-tip="Accounts" title="Accounts — switch between signed-in Claude / ChatGPT logins"></button>
+        <button id="newChatBtn" class="tb tb-primary" data-icon="newchat" data-tip="New chat" title="New chat"></button>
+      </div>
+    </header>
+
+    <div id="healthBar" class="hidden">
+      <span class="hb-ic" data-icon="warn"></span>
+      <span id="healthText"></span>
+      <button id="healthClose" title="Dismiss">&times;</button>
+    </div>
+
+    <div id="historyPanel" class="hidden">
+      <div class="hp-head">
+        <span>Chat history</span>
+        <button id="historyClose" title="Close">&times;</button>
+      </div>
+      <div id="historyList"></div>
+    </div>
+
+    <div id="cachePanel" class="hidden">
+      <div class="hp-head">
+        <span>Cache &amp; temp files</span>
+        <button id="cacheClose" title="Close">&times;</button>
+      </div>
+      <div id="cacheList"></div>
+    </div>
+
+    <div id="dirModal" class="hidden">
+      <div class="dm-box">
+        <div class="dm-head">&#127916; Director's build spec</div>
+        <div class="dm-sub">This is exactly what will be handed to the build model along with your brief. Approve it, add your points below (Build = your notes override the spec · Rewrite = the director redoes the spec around them), or skip the director.</div>
+        <pre id="dirSpec"></pre>
+        <textarea id="dirNotes" rows="2" placeholder="Add your points (optional) — they override the spec above, or ride along if you skip it&hellip;"></textarea>
+        <div class="dm-actions">
+          <button id="dirBuild" class="btn-run">Build this</button>
+          <button id="dirRewrite" class="btn-ghost hidden" title="The director rewrites the spec around your notes and shows it again">Rewrite with notes</button>
+          <button id="dirSkip" class="btn-ghost">Skip director</button>
+          <button id="dirCancel" class="btn-ghost">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="lightbox" class="hidden">
+      <button id="lbClose" title="Close">&times;</button>
+      <img id="lbImg" alt="" />
+    </div>
+
+    <main id="chat">
+      <div id="emptyState">
+        <img class="es-mark" src="img/mark.svg" alt="" />
+        <h1 class="es-title">What are we animating?</h1>
+        <p class="es-sub">Brief a shot in plain words. MotionPilot reads your timeline, keyframes it layer by layer, and renders frames to check its own work.</p>
+        <div class="es-sugg">
+          <button class="sugg" data-mode="new" data-prompt="A 5-second kinetic title reveal for the word &quot;LAUNCH&quot; — bold sans, black on white, snappy scale and crop-wipe moves.">Kinetic title reveal</button>
+          <button class="sugg" data-mode="new" data-prompt="Extrude our logo in real 3D — brushed metal, soft key light with shadows, a slow 40° orbit with shallow depth of field.">3D logo orbit</button>
+          <button class="sugg" data-mode="polish" data-prompt="Polish the easing in the active comp — remove linear keys, add a fast launch and a long soft landing, keep the timing.">Polish my easing</button>
+          <button class="sugg" data-mode="recreate" data-prompt="Recreate the attached reference animation in a new comp — match the timing, layout and motion feel.">Recreate a reference</button>
+        </div>
+        <p class="es-hint"><kbd>Enter</kbd> send · <kbd>Shift</kbd>+<kbd>Enter</kbd> new line · drop images, videos or docs as references</p>
+      </div>
+    </main>
+
+    <footer id="composerWrap">
+      <div id="dropHint">Drop reference files</div>
+
+      <div id="permBar" class="hidden">
+        <span id="permText">Run this script in After Effects?</span>
+        <div class="pb-actions">
+          <button id="permPrimary" class="btn-run">Run in AE</button>
+          <button id="permDismiss" class="btn-ghost">Discard</button>
+        </div>
+      </div>
+
+      <div id="chips"></div>
+
+      <div id="taskModes" title="What kind of task is this? Picks the right workflow and skills for the model.">
+        <button data-mode="new">&#10010; New</button>
+        <button data-mode="edit">&#9998; Edit</button>
+        <button data-mode="style">&#10022; Stylize</button>
+        <button data-mode="polish">&#8767; Polish</button>
+        <button data-mode="recreate">&#8635; Recreate</button>
+        <button data-mode="other">&#9671; Other</button>
+      </div>
+
+      <div id="composer">
+        <div id="dragHandle" title="Drag to resize the typing area (double-click to reset)"></div>
+        <button id="expandBtn" data-icon="expand" title="Enlarge typing area"></button>
+        <textarea id="input" rows="1" placeholder="Describe a shot, a fix or a polish pass…"></textarea>
+
+        <div id="controls">
+          <div class="controls-left">
+            <button id="attachBtn" data-icon="plus" title="Add image, video or document reference"></button>
+            <div class="dd" id="modelDD" title="Model — who does the work">
+              <select id="model">
+                <option value="">Claude</option>
+              </select>
+            </div>
+            <div class="dd" id="effortDD" title="Reasoning effort — how long it thinks">
+              <select id="effort">
+                <option value="">Effort</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="xhigh">XHigh</option>
+                <option value="max">Max</option>
+                <option value="ultra">Ultra</option>
+              </select>
+            </div>
+            <button id="genBtn" class="off" data-icon="sparkle"><span>Gen</span></button>
+            <button id="designBtn" class="off">&#9707; Design</button>
+            <div class="dd" id="styleDD" title="Editing style — attach a style pack to your next prompt">
+              <select id="styleSel">
+                <option value="">Style</option>
+                <option value="ui-motion">UI Motion</option>
+                <option value="kinetic-type">Kinetic Type</option>
+                <option value="cutout-collage">Cutout Collage</option>
+                <option value="flat-scene">Flat Scene</option>
+                <option value="data-editorial">Data Editorial</option>
+                <option value="html-to-scene">HTML to Scene</option>
+                <option value="grain-print">Grain Print</option>
+                <option value="soft-glow">Soft Glow</option>
+                <option value="depth-blur">Depth Blur</option>
+                <option value="hard-sticker">Hard Sticker</option>
+                <option value="grain-gradient">Grain Gradient</option>
+              </select>
+            </div>
+            <button id="tplBtn" data-icon="template" title="Insert a fill-in prompt template for this task type"></button>
+          </div>
+          <div class="controls-right">
+            <button id="doneBtn" class="hidden" data-icon="check" title="Good enough — the model finishes the current step, does one last check, and stops"><span>Finish</span></button>
+            <div class="dd right" id="modeDD" title="Ask: approve scripts before they run. Auto: run immediately.">
+              <select id="mode">
+                <option value="ask">Ask</option>
+                <option value="auto">Auto</option>
+              </select>
+            </div>
+            <button id="sendBtn" title="Send (Enter)">
+              <span id="sendIcon" data-icon="send"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="js/CSInterface.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/tip.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

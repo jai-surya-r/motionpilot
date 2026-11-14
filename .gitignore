@@ -1,0 +1,17 @@
+# build output / signing material (never commit certificates)
+AE_Plugin/installer/dist/
+AE_Plugin/installer/build/
+*.zxp
+*.p12
+*.pass
+# backups / local notes
+*.bak*
+*.log
+CLAUDE
+CLAUDE.local.md
+.claude/
+# OS / editor
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
